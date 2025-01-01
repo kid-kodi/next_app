@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LoginFormSchema } from "@/lib/types";
+import { ResetPasswordFormSchema } from "@/lib/types";
 
 import {
 	Form,
@@ -22,31 +22,36 @@ import {
 } from '@/components/ui/form'
 import Loading from "@/components/global/loading";
 import { Eye, EyeOff } from "lucide-react";
-import { login } from "@/api/auth";
+import { reset_password, signup } from "@/api/auth";
+import { decrypt, encrypt } from "@/lib/utils";
 
-import { useRouter } from 'next/navigation'
-import { handleLogin } from "./actions";
+import { useRouter, useSearchParams } from 'next/navigation'
 
 type Props = {};
 
-export default function LoginPage({ }: Props) {
+export default function ResetPasswordPage({ }: Props) {
 	const [isView, setIsView] = useState(false);
 	const { toast } = useToast();
 	const router = useRouter();
 
+	const searchParams = useSearchParams()
 
-	const form = useForm<z.infer<typeof LoginFormSchema>>({
-		resolver: zodResolver(LoginFormSchema),
+	const userId = decrypt("f", searchParams.get('u0') || '');
+
+
+	const form = useForm<z.infer<typeof ResetPasswordFormSchema>>({
+		resolver: zodResolver(ResetPasswordFormSchema),
 		mode: 'onChange',
 		defaultValues: {
-			email: '',
+			userId: `${userId}`,
 			password: '',
 		},
 	});
 
-	const onSubmit = async (values: z.infer<typeof LoginFormSchema>) => {
+	const onSubmit = async (values: z.infer<typeof ResetPasswordFormSchema>) => {
 		try {
-			const response = await handleLogin(values);
+			const { userId, password } = values;
+			const response = await reset_password(userId, password);
 			if (!response.success) {
 				toast({
 					variant: 'destructive',
@@ -56,7 +61,7 @@ export default function LoginPage({ }: Props) {
 				return
 			}
 
-			router.push(`/dashboard`);
+			router.push(`/login`);
 		} catch (error: any) {
 
 			toast({
@@ -70,7 +75,7 @@ export default function LoginPage({ }: Props) {
 	return (
 		<div className="w-[300px]">
 			<div className="w-[300px] space-y-3">
-				<h2 className="text-lg font-bold">Connectez-vous à votre compte</h2>
+				<h2 className="text-lg font-bold">Changer de mot de passe</h2>
 			</div>
 
 			<Form {...form}>
@@ -81,34 +86,10 @@ export default function LoginPage({ }: Props) {
 
 					<FormField
 						control={form.control}
-						name="email"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Adresse Email</FormLabel>
-								<FormControl>
-									<Input placeholder="Adresse Email" {...field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
 						name="password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>
-								<div className="flex items-center">
-                  <div>Password</div>
-                  <Link
-                    href="/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Mot de passe oublié ?
-                  </Link>
-                </div>
-								</FormLabel>
+								<FormLabel>Mot de passe</FormLabel>
 								<FormControl>
 									<div className="relative">
 										<Input type={isView ? "text" : "password"} {...field} />
@@ -136,16 +117,16 @@ export default function LoginPage({ }: Props) {
 						disabled={form.formState.isSubmitting}
 						type="submit"
 					>
-						{form.formState.isSubmitting ? <Loading /> : 'Connexion'}
+						{form.formState.isSubmitting ? <Loading /> : 'Continuer'}
 					</Button>
 				</form>
 			</Form>
 
 			<div className="w-[300px] my-5">
 				<span className="text-sm">
-					Vous n'avez pas de compte ?
-					<Link href={`/register`}>
-						<b> enregistrez vous</b>
+					Vous avez deja un compte ?
+					<Link href={`/login`}>
+						<b> connectez-vous</b>
 					</Link>
 				</span>
 			</div>

@@ -35,7 +35,7 @@ import { handleOtpValidation } from "./actions";
 type Props = {};
 
 export default function OtpPage({ }: Props) {
-	const [timer, setTimer] = useState(0);
+	const [timer, setTimer] = useState(60);
 
 	const { toast } = useToast();
 	const router = useRouter();

@@ -57,6 +57,64 @@ export async function otp_validation(
   }
 }
 
+export async function forgot_password(
+  email: string
+) {
+  try {
+    const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function reset_code(
+  activation_code: string
+) {
+  try {
+    const res = await fetch(`${API_URL}/api/auth/verify-account`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ activation_code }),
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function reset_password(
+  userId: string,
+  password: string
+) {
+  try {
+    const res = await fetch(`${API_URL}/api/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, password }),
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function logout() {
   deleteSession();
   redirect("/login");

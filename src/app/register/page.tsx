@@ -151,11 +151,11 @@ export default function RegisterPage({ }: Props) {
 				</form>
 			</Form>
 
-			<div className="w-[300px]">
+			<div className="w-[300px] my-5">
 				<span className="text-sm">
 					Vous avez deja un compte ?
 					<Link href={`/login`}>
-						<b>connectez-vous</b>
+						<b> connectez-vous</b>
 					</Link>
 				</span>
 			</div>
