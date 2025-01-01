@@ -1,29 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/table/data-table";
-
-import { statuses } from "@/lib/constants";
-import { getTasks } from "@/lib/queries";
-import { columns } from "./columns";
+import Loading from "@/components/global/loading";
 
 
-export default async function Home() {
-  const tasks = await getTasks();
+export default function Home() {
+
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-      <div className="flex items-center justify-between space-y-2">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Welcome back!</h2>
-          <p className="text-muted-foreground">
-            Here&apos;s a list of your tasks for this month!
-          </p>
-        </div>
-        <div className="flex items-center space-x-2"></div>
-      </div>
-      <DataTable
-        data={tasks}
-        columns={columns}
-        facetedFilters={[{ title: "status", data: statuses }]}
-      />
+      <Loading />
     </div>
   );
 }
