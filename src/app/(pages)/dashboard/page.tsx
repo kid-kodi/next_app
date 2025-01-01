@@ -13,6 +13,14 @@ export default function DashBoardPage({}: Props) {
     await logout()
   }
 
+  // const getCurrentUser = async () => {
+  //   const user = await getUser()
+  //   console.log(user)
+  // }
+
+  // getCurrentUser()
+
+
 
   return (
     <div>

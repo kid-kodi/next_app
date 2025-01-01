@@ -1,5 +1,6 @@
-import { deleteSession } from "@/lib/Session";
+import { deleteSession, verifySession } from "@/lib/Session";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -114,6 +115,27 @@ export async function reset_password(
     console.log(error);
   }
 }
+
+export const getUser = cache(async () => {
+  const session = await verifySession()
+  
+  if (!session) return null
+
+  try {
+    const res = await fetch(`${API_URL}/api/auth/me`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${session.session}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+})
 
 export async function logout() {
   deleteSession();
